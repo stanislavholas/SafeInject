@@ -10,7 +10,7 @@ let package = Package(
         .library(name: "SafeInjectTesting", targets: ["SafeInjectTesting"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "509.0.0"),
+        .package(url: "https://github.com/swiftlang/swift-syntax.git", "509.0.0"..<"601.0.0"),
     ],
     targets: [
         .macro(
