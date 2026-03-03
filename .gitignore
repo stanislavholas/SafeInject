@@ -1,0 +1,12 @@
+.DS_Store
+.build/
+.swiftpm/xcode/
+.swiftpm/configuration/
+*.xcodeproj/
+*.xcworkspace/
+xcuserdata/
+DerivedData/
+Package.resolved
+*.o
+*.dylib
+*.dSYM/
