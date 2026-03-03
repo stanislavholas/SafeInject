@@ -22,7 +22,7 @@ public struct InjectableMacro: ExtensionMacro {
         conformingTo protocols: [TypeSyntax],
         in context: some MacroExpansionContext
     ) throws -> [ExtensionDeclSyntax] {
-        guard declaration.is(ClassDeclSyntax.self) else {
+        guard let classDecl = declaration.as(ClassDeclSyntax.self) else {
             context.diagnose(
                 Diagnostic(node: node, message: InjectableDiagnostic.classOnly)
             )
@@ -32,12 +32,15 @@ public struct InjectableMacro: ExtensionMacro {
         let injectedTypes = extractInjectedTypes(from: declaration)
         let dependencyList = injectedTypes.joined(separator: ", ")
 
+        let isPublic = classDecl.modifiers.contains { $0.name.text == "public" }
+        let access: String = isPublic ? "public " : ""
+
         let ext: DeclSyntax = """
         extension \(type.trimmed): Injectable {
-            static var dependencies: [Any.Type] {
+            \(raw: access)static var dependencies: [Any.Type] {
                 [\(raw: dependencyList)]
             }
-            static func _makeInstance() -> Any {
+            \(raw: access)static func _makeInstance() -> Any {
                 \(type.trimmed)()
             }
         }

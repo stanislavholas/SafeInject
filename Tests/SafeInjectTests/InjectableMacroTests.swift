@@ -126,6 +126,34 @@ final class InjectableMacroTests: XCTestCase {
         )
     }
 
+    func testExpandsWithPublicClass() {
+        assertMacroExpansion(
+            """
+            @Injectable
+            public class HomeViewModel {
+                @Injected var userService: UserServiceProtocol
+                @Injected var analytics: AnalyticsProtocol
+            }
+            """,
+            expandedSource: """
+            public class HomeViewModel {
+                @Injected var userService: UserServiceProtocol
+                @Injected var analytics: AnalyticsProtocol
+            }
+
+            extension HomeViewModel: Injectable {
+                public static var dependencies: [Any.Type] {
+                    [UserServiceProtocol.self, AnalyticsProtocol.self]
+                }
+                public static func _makeInstance() -> Any {
+                    HomeViewModel()
+                }
+            }
+            """,
+            macros: macros
+        )
+    }
+
     func testFailsOnStruct() {
         assertMacroExpansion(
             """
